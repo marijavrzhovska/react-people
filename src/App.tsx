@@ -1,12 +1,24 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { Person } from './Types/Person'
-import { PERSONS } from "./data/mock-persons";
 import PersonDetail from "./Components/PersonDetail";
 
 
 export default function App() {
-  const [persons, setPersons] = useState<Person[]>(PERSONS);
+  const [persons, setPersons] = useState<Person[]>([]);
   const [selectedPersonId, SetSelectedPersonId] = useState<number | null>(null);
+  const fetched = useRef(false);
+  useEffect(()=> {
+    if(!fetched.current){
+      fetch('http://localhost:3000/persons').then(rez => {
+        return rez.json();
+      }).then(data => {
+        setPersons(data);
+      })
+      fetched.current = true;
+    }
+    
+  }, [])
+
   const selectedPerson = persons.find(person => person.id === selectedPersonId);
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
   const updatedName = event.target.value;
