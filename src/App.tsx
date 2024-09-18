@@ -1,6 +1,7 @@
-import { ChangeEvent, Fragment, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Person } from './Types/Person'
 import { PERSONS } from "./data/mock-persons";
+import PersonDetail from "./Components/PersonDetail";
 
 
 export default function App() {
@@ -32,26 +33,7 @@ const handleSelectPerson =(id: number) => {
             </li>
           ))}
         </ul>
-        {selectedPerson &&
-        <Fragment>
-          <h2 className="text-2xl">Details</h2>
-        <div>
-          <span className="font-bold">ID:{selectedPerson.id}</span>
-        </div>
-        <div className="space-x-2">
-          <span className="font-bold">Name:</span>
-          <span className="uppercase">{selectedPerson.name}</span>
-        </div>
-        <div className="flex flex-col gap-2 mt-3 border-t">
-          <label>Person name</label>
-          <input 
-          type="text"
-          placeholder="name"
-          className="border border-blue-300 rounded-lg p-2 w-1/4" 
-          value={selectedPerson.name}
-          onChange={handleNameChange}></input>
-        </div>
-        </Fragment>}
+        <PersonDetail person={selectedPerson}  onChangeName={handleNameChange}/>
     </div>
   )
 }
