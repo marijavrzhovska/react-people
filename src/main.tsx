@@ -5,6 +5,7 @@ import './index.css'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Dashboard from './Components/Dashboard.tsx'
 import PersonsList from './Components/PersonsList.tsx'
+import PersonDetail from './Components/PersonDetail.tsx'
 
 const router = createBrowserRouter([
   {
@@ -13,8 +14,8 @@ const router = createBrowserRouter([
     children: [
       {index: true, element: <Navigate replace to='/dashboard'/>},
       {path: '/dashboard', element: <Dashboard/>},
-      {path: '/persons', element: <PersonsList/>}
-
+      {path: '/persons', element: <PersonsList/>},
+      {path: '/persons/:id', element: <PersonDetail/>}
     ]
   }
 ])

@@ -1,13 +1,32 @@
-import { ChangeEvent } from 'react';
+import { useEffect, useState ,useRef, ChangeEvent} from 'react';
 import { Person } from '../Types/Person'
+import { useParams } from 'react-router-dom';
 
-type Props = {
-    person?: Person;
-    onChangeName: (event: ChangeEvent<HTMLInputElement>) => void;
-}
 
-export default function PersonDetail({person, onChangeName}: Props) {
-    if(!person) return null;
+const apiUrl = import.meta.env.VITE_API_URL;
+
+
+export default function PersonDetail() {
+  const [person, setPerson] = useState<Person | null>(null);
+  const params = useParams();
+  const fetched = useRef(false);
+  useEffect(()=> {
+    if(!fetched.current){
+      fetch(`${apiUrl}/persons?/${params.id}`).then(rez => {
+        return rez.json();
+      }).then(data => {
+        setPerson(data);
+      })
+      fetched.current = true;
+    }
+    
+  }, [params.id])
+
+  if(!person) return null;
+
+  const handleNameChange = (event : ChangeEvent<HTMLInputElement>) => {
+    setPerson({...person, name: event.target.value})
+  }
   
   
     return (
@@ -27,7 +46,7 @@ export default function PersonDetail({person, onChangeName}: Props) {
           placeholder="name"
           className="border border-blue-300 rounded-lg p-2 w-1/4" 
           value={person.name}
-          onChange={onChangeName}></input>
+          onChange={handleNameChange}></input>
         </div>
      </>   
   )
