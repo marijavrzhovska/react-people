@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Person } from "../Types/Person";
 import { Link } from "react-router-dom";
+import { useMessages } from "../context/MessageContext";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
 export default function Dashboard() {
   const [persons, setPersons] = useState<Person[]>([]);
+  const {addMessage} = useMessages();
   const fetched = useRef(false);
   useEffect(()=> {
     if(!fetched.current){
@@ -14,11 +16,12 @@ export default function Dashboard() {
         return rez.json();
       }).then(data => {
         setPersons(data);
+        addMessage('top people loaded');
       })
       fetched.current = true;
     }
     
-  }, [])
+  }, [addMessage])
   
   return (
     <div className="flex flex-col gap3">
@@ -31,6 +34,8 @@ export default function Dashboard() {
         </Link>
       ))}
       </div>
+      
+      
       
     </div>
   )

@@ -1,6 +1,7 @@
 import { useEffect, useState ,useRef, ChangeEvent} from 'react';
 import { Person } from '../Types/Person'
 import { useParams } from 'react-router-dom';
+import { useMessages } from '../context/MessageContext';
 
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -10,17 +11,20 @@ export default function PersonDetail() {
   const [person, setPerson] = useState<Person | null>(null);
   const params = useParams();
   const fetched = useRef(false);
+  const {addMessage} = useMessages();
+  
   useEffect(()=> {
     if(!fetched.current){
       fetch(`${apiUrl}/persons?/${params.id}`).then(rez => {
         return rez.json();
       }).then(data => {
         setPerson(data);
+        addMessage(`Person ${data.name} loaded`)
       })
       fetched.current = true;
     }
     
-  }, [params.id])
+  }, [params.id, addMessage])
 
   if(!person) return null;
 
