@@ -1,4 +1,4 @@
-import { useEffect, useState ,useRef, ChangeEvent} from 'react';
+import { useEffect, useState ,useRef, FormEvent} from 'react';
 import { Person } from '../Types/Person'
 import { useParams } from 'react-router-dom';
 import { useMessages } from '../context/MessageContext';
@@ -15,7 +15,7 @@ export default function PersonDetail() {
   
   useEffect(()=> {
     if(!fetched.current){
-      fetch(`${apiUrl}/persons?/${params.id}`).then(rez => {
+      fetch(`${apiUrl}/persons/${params.id}`).then(rez => {
         return rez.json();
       }).then(data => {
         setPerson(data);
@@ -28,8 +28,27 @@ export default function PersonDetail() {
 
   if(!person) return null;
 
-  const handleNameChange = (event : ChangeEvent<HTMLInputElement>) => {
-    setPerson({...person, name: event.target.value})
+  
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const url = `${apiUrl}/persons/${person.id}`
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        body: JSON.stringify({name: formData.get('name')})
+      });
+
+      if(!response.ok) throw new Error('Request failed: ' + response.statusText);
+     const data = await response.json();
+     addMessage(`Person ${person.name} updated to ${data.name}`);
+     setPerson(data);
+    } catch (error) {
+      console.log(error);
+      addMessage('Failed to update person')
+    }
+
   }
   
   
@@ -45,12 +64,22 @@ export default function PersonDetail() {
         </div>
         <div className="flex flex-col gap-2 mt-3 border-t">
           <label>Person name</label>
+          <form onSubmit={onSubmit}>
+          
+          <div className='flex gap-3'>
           <input 
           type="text"
           placeholder="name"
+          name='name'
           className="border border-blue-300 rounded-lg p-2 w-1/4" 
-          value={person.name}
-          onChange={handleNameChange}></input>
+          defaultValue={person.name}
+          />
+          <button type='submit' className='p-2 bg-slate-700 text-white rounded-lg'>
+            Submit
+          </button>
+          </div>
+            
+          </form>
         </div>
      </>   
   )
