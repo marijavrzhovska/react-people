@@ -24,7 +24,19 @@ export default function PersonsList() {
     
   }, [addMessage])
 
-
+  async function deletePerson(person: Person){
+    try {
+      const response = await fetch(`${apiUrl}/persons/${person.id}`, {
+        method: 'DELETE'
+      });
+      if(!response.ok) throw new Error('Request failed:' + response.status);
+      setPersons(prevPersons => prevPersons.filter(h => h.id !== person.id));
+      addMessage(`Person ${person.name} deleted `);
+    } catch (error) {
+      console.log(error);
+      addMessage('Failed to delete person');
+    }
+  }
   
   return (
     <>
@@ -37,7 +49,20 @@ export default function PersonsList() {
           {persons.map(person => (
             <Link to={`/persons/${person.id}`} key={person.id} className="flex cursor-pointer" >
               <span className="bg-slate-700 text-red-500 rounded-l p-2">{person.id}</span>
-              <span className="p-2 bg-slate-300 rounded-r w-full">{person.name}</span>
+
+              <div className="p-2 bg-slate-300 rounded-r w-full flex justify-between">
+              <span >{person.name}</span>
+              <span 
+              onClick={(e) =>{
+                e.preventDefault();
+                deletePerson(person);
+              } }
+              className="bg-white px-1 cursor-pointer">
+                X
+              </span>
+              </div>
+
+              
             </Link>
           ))}
         </ul>

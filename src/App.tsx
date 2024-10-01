@@ -12,7 +12,7 @@ export default function App() {
           <NavLink to='/dashboard'>Dashboard</NavLink>
         </li>
         <li>
-          <NavLink to='/persons'>People</NavLink>
+          <NavLink to='/persons' end>People</NavLink>
         </li>
       </ul>
     </nav>
