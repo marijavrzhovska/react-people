@@ -28,7 +28,11 @@ export default function PersonsList() {
   
   return (
     <>
+        <div className="flex gap-3">
         <h2 className="text-2xl">People</h2>
+        <Link to='/persons/create' className='p-2 bg-slate-700 text-white rounded-lg'>Create new</Link>
+        </div>
+        
         <ul className="flex flex-col gap-2 my-3">
           {persons.map(person => (
             <Link to={`/persons/${person.id}`} key={person.id} className="flex cursor-pointer" >
